@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class AddressCreate(BaseModel):
-    uid: str
+    user_uid: str
     receiver: str
     phone: str
     address: str
@@ -21,7 +21,7 @@ class AddressUpdate(BaseModel):
 
 class AddressResponse(BaseModel):
     address_id: int
-    uid: str
+    user_uid: str
     receiver: str
     phone: str
     address: str

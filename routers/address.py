@@ -13,24 +13,6 @@ router = APIRouter(prefix="/address", tags=["address"])
 
 @router.post("/create", response_model=AddressResponse)
 async def api_create_address(address_create: AddressCreate, db: AsyncSession = Depends(get_db)):
-    existing_addresses = await list_addresses_of_user(db, address_create.uid)
-    if existing_addresses and any(addr.uid == address_create.uid for addr in existing_addresses):
-        raise HTTPException(status_code=400, detail="Address already exists for this user")
-    
-    # If the address is default, set all other addresses to not default
-    # Nhớ tạo nút để chỉ định địa chỉ mặc định
-    if address_create.is_default and existing_addresses:
-        for addr in existing_addresses:
-            if addr.is_default:
-                addr.is_default = False
-                db.add(addr)
-        await db.commit()
-        await db.refresh(existing_addresses)
-
-    # Nếu không có địa chỉ nào thì địa chỉ mới sẽ là mặc định
-    if not existing_addresses and address_create.is_default:
-        address_create.is_default = True
-
     address = await create_address(db, address_create)
     return address
 
