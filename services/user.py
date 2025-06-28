@@ -26,14 +26,13 @@ async def update_user(db: AsyncSession, user_update: UserUpdate) -> Optional[Use
         return None
     # Cập nhật các trường nếu có
     if user_update.email is not None:
-        user.email = user_update.email # type: ignore
+        user.email = user_update.email 
     if user_update.name is not None:
-        user.name = user_update.name # type: ignore
+        user.name = user_update.name 
     if user_update.phone is not None:
-        user.phone = user_update.phone # type: ignore
+        user.phone = user_update.phone
     if user_update.role is not None:
-        user.role = user_update.role # type: ignore
-    db.add(user)
+        user.role = user_update.role
     await db.commit()
     await db.refresh(user)
     return user
