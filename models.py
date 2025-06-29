@@ -122,7 +122,6 @@ class MenuItem(Base):
     name = mapped_column(String(255), nullable=False)
     description = mapped_column(Text)
     price = mapped_column(DECIMAL(10,2), nullable=False)
-    image_url = mapped_column(String(255))
     available = mapped_column(Boolean, default=True)
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
@@ -130,6 +129,18 @@ class MenuItem(Base):
     category = relationship("Category", back_populates="menu_items", cascade="all, delete-orphan")
     restaurant = relationship("Restaurant", back_populates="menu_items")
     order_items = relationship("OrderItem", back_populates="menu_item", cascade="all, delete-orphan")
+
+# Food images
+
+class FoodImage(Base):
+    __tablename__ = "food_images"
+    image_id = mapped_column(Integer, primary_key=True, index=True)
+    item_id = mapped_column(Integer, ForeignKey('menu_items.item_id'))
+    image_url = mapped_column(String(255), nullable=False)
+    created_at = mapped_column(DateTime, default=datetime.datetime.now)
+    updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    # relationships
+    menu_item = relationship("MenuItem", back_populates="food_images", cascade="all, delete-orphan")
 
 # -------- ORDERS --------
 class Order(Base):
