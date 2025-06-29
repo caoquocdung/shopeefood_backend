@@ -102,11 +102,23 @@ class Restaurant(Base):
     reviews = relationship("Review", back_populates="restaurant", cascade="all, delete-orphan")
     vouchers = relationship("Voucher", back_populates="restaurant", cascade="all, delete-orphan")
 
+class Category(Base):
+    __tablename__ = "categories"
+    category_id = mapped_column(Integer, primary_key=True, index=True)
+    name = mapped_column(String(255), nullable=False)
+    description = mapped_column(Text)
+    image_url = mapped_column(String(255))
+    created_at = mapped_column(DateTime, default=datetime.datetime.now)
+    updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    # relationships
+    menu_items = relationship("MenuItem", back_populates="category", cascade="all, delete-orphan")
+
 # -------- MENU ITEMS --------
 class MenuItem(Base):
     __tablename__ = "menu_items"
     item_id = mapped_column(Integer, primary_key=True, index=True)
     restaurant_id = mapped_column(Integer, ForeignKey('restaurants.restaurant_id'))
+    category_id = mapped_column(Integer, ForeignKey('categories.category_id'))
     name = mapped_column(String(255), nullable=False)
     description = mapped_column(Text)
     price = mapped_column(DECIMAL(10,2), nullable=False)
@@ -115,6 +127,7 @@ class MenuItem(Base):
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     # relationships
+    category = relationship("Category", back_populates="menu_items", cascade="all, delete-orphan")
     restaurant = relationship("Restaurant", back_populates="menu_items")
     order_items = relationship("OrderItem", back_populates="menu_item", cascade="all, delete-orphan")
 
