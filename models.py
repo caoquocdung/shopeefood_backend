@@ -126,9 +126,10 @@ class MenuItem(Base):
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     # relationships
-    category = relationship("Category", back_populates="menu_items", cascade="all, delete-orphan")
+    category = relationship("Category", back_populates="menu_items")
     restaurant = relationship("Restaurant", back_populates="menu_items")
     order_items = relationship("OrderItem", back_populates="menu_item", cascade="all, delete-orphan")
+    food_images = relationship("FoodImage", back_populates="menu_item", cascade="all, delete-orphan")
 
 # Food images
 
@@ -140,8 +141,7 @@ class FoodImage(Base):
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     # relationships
-    menu_item = relationship("MenuItem", back_populates="food_images", cascade="all, delete-orphan")
-
+    menu_item = relationship("MenuItem", back_populates="food_images")
 # -------- ORDERS --------
 class Order(Base):
     __tablename__ = "orders"
