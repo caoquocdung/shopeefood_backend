@@ -46,7 +46,6 @@ class User(Base):
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     # relationships
     addresses = relationship("Address", back_populates="user", cascade="all, delete-orphan")
-    # orders = relationship("Order", back_populates="user", cascade="all, delete-orphan")
     reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")
     wallet = relationship("Wallet", uselist=False, back_populates="user", cascade="all, delete-orphan")
     search_history = relationship("SearchHistory", back_populates="user", cascade="all, delete-orphan")
@@ -129,19 +128,21 @@ class MenuItem(Base):
     category = relationship("Category", back_populates="menu_items")
     restaurant = relationship("Restaurant", back_populates="menu_items")
     order_items = relationship("OrderItem", back_populates="menu_item", cascade="all, delete-orphan")
-    food_images = relationship("FoodImage", back_populates="menu_item", cascade="all, delete-orphan")
+    images = relationship("MenuItemImage", back_populates="menu_item", cascade="all, delete-orphan")
 
-# Food images
-
-class FoodImage(Base):
-    __tablename__ = "food_images"
+# -------- MENU ITEM IMAGES --------
+class MenuItemImage(Base):
+    __tablename__ = "menu_item_images"
     image_id = mapped_column(Integer, primary_key=True, index=True)
     item_id = mapped_column(Integer, ForeignKey('menu_items.item_id'))
     image_url = mapped_column(String(255), nullable=False)
+    is_primary = mapped_column(Boolean, default=False)
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     # relationships
-    menu_item = relationship("MenuItem", back_populates="food_images")
+    menu_item = relationship("MenuItem", back_populates="images")
+
+
 # -------- ORDERS --------
 class Order(Base):
     __tablename__ = "orders"

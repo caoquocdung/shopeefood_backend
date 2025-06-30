@@ -5,21 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.address import AddressCreate, AddressUpdate
 from models import Address
 
-async def create_address(db: AsyncSession, address_create: AddressCreate) -> Address:
-    # address = Address(
-    #     user_uid=address_create.user_uid,
-    #     receiver=address_create.receiver,
-    #     phone=address_create.phone,
-    #     address=address_create.address,
-    #     latitude=address_create.latitude,
-    #     longitude=address_create.longitude,
-    #     is_default=address_create.is_default
-    # )
-    # db.add(address)
-    # await db.commit()
-    # await db.refresh(address)
-    # return address
-        # Lấy các địa chỉ đã có
+async def create_address(
+        db: AsyncSession,
+        address_create: AddressCreate
+        ) -> Address:
+    # Lấy các địa chỉ đã có
     result = await db.execute(select(Address).where(Address.user_uid == address_create.user_uid))
     existing_addresses = result.scalars().all()
 
@@ -41,7 +31,15 @@ async def create_address(db: AsyncSession, address_create: AddressCreate) -> Add
         address_create.is_default = True
 
     # Tạo mới
-    address = Address(**address_create.model_dump())
+    address = Address(
+        user_uid=address_create.user_uid,
+        receiver=address_create.receiver,
+        phone=address_create.phone,
+        address=address_create.address,
+        latitude=address_create.latitude,
+        longitude=address_create.longitude,
+        is_default=address_create.is_default
+    )
     db.add(address)
     await db.commit()
     await db.refresh(address)

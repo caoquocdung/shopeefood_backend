@@ -5,13 +5,7 @@ from schemas.user import UserCreate, UserUpdate
 from typing import List, Optional
 
 async def create_user(db: AsyncSession, user_create: UserCreate) -> User:
-    user = User(
-        uid=user_create.uid,
-        email=user_create.email,
-        name=user_create.name,
-        phone=user_create.phone,
-        role=user_create.role
-    )
+    user = User(**user_create.model_dump(exclude_unset=True))
     db.add(user)
     await db.commit()
     await db.refresh(user)
