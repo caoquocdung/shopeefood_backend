@@ -2,3 +2,4 @@ routers/address.py
 Chỉnh lại services, routers chỉ gọi hàm từ services và không xử lí gì thêm 
 thêm dữ liệu mẫu cho menuItem, restaurant + tạo asset tương ứng 
 thêm giới tính và sinh nhật vào user
+thêm các trường vào restaurant : description, rating, is_favorite, is_available, created_at
