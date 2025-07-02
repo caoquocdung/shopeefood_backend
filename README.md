@@ -1,0 +1,19 @@
+```
+yay -S docker --noconfirm
+systemctl enable --now docker.service
+sudo usermod -aG docker $USER
+
+```
+logout
+```
+docker run -d \
+  --name mysql-container \
+  -e MYSQL_ROOT_PASSWORD=sdf \
+  -e MYSQL_DATABASE=shopeefood_db \
+  -p 3306:3306 \
+  mysql:8
+```
+
+```
+docker run mysql-container
+```
