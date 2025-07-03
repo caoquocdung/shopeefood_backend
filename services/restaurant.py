@@ -1,3 +1,7 @@
+from http.client import HTTPException
+import os
+import uuid
+from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
@@ -37,3 +41,53 @@ async def delete_restaurant(db: AsyncSession, restaurant_id: int) -> bool:
 async def list_restaurants(db: AsyncSession, skip: int = 0, limit: int = 100) -> List[Restaurant]:
     result = await db.execute(select(Restaurant).offset(skip).limit(limit))
     return list(result.scalars().all())
+
+RESTAURANT_IMAGE_DIR = "static/restaurant_images"
+ALLOWED_RESTAURANT_IMG_TYPES = {"image/jpeg", "image/png", "image/webp"}
+MAX_RESTAURANT_IMG_SIZE = 3 * 1024 * 1024  # 3MB    
+
+def generate_restaurant_image_filename(original_filename: str) -> str:
+    ext = os.path.splitext(original_filename)[1]
+    unique = uuid.uuid4().hex
+    return f"restaurant_{unique}{ext}"
+
+async def upload_restaurant_image(
+        db: AsyncSession,
+        restaurant_id: int,
+        file: UploadFile) -> str:
+    # Validate type
+    if file.content_type not in ALLOWED_RESTAURANT_IMG_TYPES:
+        raise HTTPException(400, "Invalid image type")
+    # Validate size
+    if file.spool_max_size > MAX_RESTAURANT_IMG_SIZE:
+        raise HTTPException(400, "Image size exceeds limit")
+    # Generate filename
+    filename = generate_restaurant_image_filename(file.filename)
+    file_path = os.path.join(RESTAURANT_IMAGE_DIR, filename)
+    # Save file
+    with open(file_path, "wb") as f:
+        f.write(await file.read())
+    # Update restaurant image URL
+    restaurant = await get_restaurant(db, restaurant_id)
+    if not restaurant:
+        raise HTTPException(404, "Restaurant not found")
+    restaurant.image_url = f"/static/restaurant_images/{filename}"
+    db.add(restaurant)
+    await db.commit()
+    await db.refresh(restaurant)
+
+    return restaurant.image_url
+
+async def delete_restaurant_image(restaurant_id: int, db: AsyncSession) -> bool:
+    restaurant = await get_restaurant(db, restaurant_id)
+    if not restaurant or not restaurant.image_url:
+        return False
+    # Delete image file from disk
+    image_path = os.path.join(RESTAURANT_IMAGE_DIR, os.path.basename(restaurant.image_url))
+    if os.path.exists(image_path):
+        os.remove(image_path)
+    # Clear image URL in database
+    restaurant.image_url = None
+    db.add(restaurant)
+    await db.commit()
+    return True

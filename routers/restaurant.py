@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from db import get_db
 from schemas.restaurant import (
     RestaurantCreate, RestaurantUpdate, RestaurantResponse
 )
 from services.restaurant import (
-    create_restaurant, get_restaurant, update_restaurant, delete_restaurant, list_restaurants
+    create_restaurant, delete_restaurant_image, get_restaurant, update_restaurant, delete_restaurant, list_restaurants, upload_restaurant_image
 )
 from typing import List
 
@@ -45,3 +45,28 @@ async def api_list_restaurants(
 ):
     objs = await list_restaurants(db, skip, limit)
     return objs
+
+@router.post("/upload_image", response_model=dict)
+async def api_upload_restaurant_image(
+    restaurant_id: int,
+    file: UploadFile,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Upload a restaurant image. Returns the image URL.
+    """
+    image_url = await upload_restaurant_image(db, restaurant_id, file)
+    return {"image_url": image_url}
+
+@router.delete("/delete_image", response_model=dict)
+async def api_delete_restaurant_image(
+    restaurant_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Delete a restaurant image. Returns success message.
+    """
+    ok = await delete_restaurant_image(db, restaurant_id)
+    if not ok:
+        raise HTTPException(404, "Restaurant not found or image not found")
+    return {"detail": "Image deleted successfully"}
