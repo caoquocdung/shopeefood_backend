@@ -50,7 +50,7 @@ async def api_list_users(
     users = await list_users(db, skip=skip, limit=limit)
     return users
 
-@router.post("/upload_avatar")
+@router.post("/upload_avatar", response_model=dict)
 async def upload_avatar(
     uid: str = Form(...),
     file: UploadFile = File(...),
@@ -59,9 +59,9 @@ async def upload_avatar(
     url = await upload_user_avatar(db, uid, file)
     return {"avatar_url": url}
 
-@router.post("/delete_avatar")
+@router.delete("/delete_avatar", response_model=dict)
 async def delete_avatar(
-    uid: str = Form(...),
+    uid: str,
     db: AsyncSession = Depends(get_db)
 ):
     ok = await delete_user_avatar(db, uid)

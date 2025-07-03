@@ -17,7 +17,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     name: Optional[str] = None
     phone: Optional[str] = None
-    gender: Optional[str]
+    gender: Optional[str] = None
     birthday: Optional[datetime] = None
     # avatar_url: Optional[str] = None
     role: Optional[str] = "customer"
