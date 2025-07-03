@@ -28,6 +28,10 @@ class VoucherStatus(enum.Enum):
     expired = 'expired'
     disabled = 'disabled'
 
+class DiscountType(enum.Enum):
+    percentage = "percentage"
+    fixed = "fixed"
+
 class WalletTransType(enum.Enum):
     topup = 'topup'
     payment = 'payment'
@@ -102,7 +106,7 @@ class Restaurant(Base):
     menu_items = relationship("MenuItem", back_populates="restaurant", cascade="all, delete-orphan")
     orders = relationship("Order", back_populates="restaurant", cascade="all, delete-orphan")
     reviews = relationship("Review", back_populates="restaurant", cascade="all, delete-orphan")
-    vouchers = relationship("Voucher", back_populates="restaurant", cascade="all, delete-orphan")
+    # vouchers = relationship("Voucher", back_populates="restaurant", cascade="all, delete-orphan")
 
 class Category(Base):
     __tablename__ = "categories"
@@ -212,17 +216,19 @@ class Voucher(Base):
     __tablename__ = "vouchers"
     voucher_id = mapped_column(Integer, primary_key=True, index=True)
     code = mapped_column(String(20), unique=True)
-    description = mapped_column(Text)
-    discount = mapped_column(DECIMAL(10,2))
+    title = mapped_column(Text)
+    discount_type = mapped_column(Enum(DiscountType), default=DiscountType.percentage, nullable=False)
+    discount_value = mapped_column(DECIMAL(10,2), nullable=False)  #
     min_order = mapped_column(DECIMAL(10,2))
     max_discount = mapped_column(DECIMAL(10,2))
-    restaurant_id = mapped_column(Integer, ForeignKey('restaurants.restaurant_id'), nullable=True)
     start_date = mapped_column(DateTime)
     end_date = mapped_column(DateTime)
-    quantity = mapped_column(Integer)
+    usage_limit = mapped_column(Integer)
+    used_count = mapped_column(Integer, default=0)
+    seller_uid = mapped_column(String(128), ForeignKey('users.uid'))
+    seller = relationship("User")
     status = mapped_column(Enum(VoucherStatus), default=VoucherStatus.active)
-    # relationships
-    restaurant = relationship("Restaurant", back_populates="vouchers")
+    
 
 # -------- WALLETS --------
 class Wallet(Base):
