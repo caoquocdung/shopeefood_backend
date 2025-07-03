@@ -15,6 +15,16 @@ class UserRole(enum.Enum):
     admin = 'admin'
     merchant = 'merchant'
 
+class UserStatus(enum.Enum):
+    active = 'active'
+    inactive = 'inactive'
+    banned = 'banned'
+
+class RestaurantStatus(enum.Enum):
+    open = 'open'
+    closed = 'closed'
+    suspended = 'suspended'
+
 class OrderStatus(enum.Enum):
     pending = 'pending'
     accepted = 'accepted'
@@ -48,6 +58,7 @@ class User(Base):
     gender = mapped_column(String(10), nullable=True)
     birthday = mapped_column(DateTime, nullable=True)
     avatar_url = mapped_column(String(255), nullable=True)
+    status = mapped_column(Enum(UserStatus), default=UserStatus.active)
     role = mapped_column(Enum(UserRole), default=UserRole.customer)
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
@@ -98,7 +109,10 @@ class Restaurant(Base):
     phone = mapped_column(String(20))
     open_time = mapped_column(String(20))
     close_time = mapped_column(String(20))
-    status = mapped_column(String(20), default='open')
+    description = mapped_column(Text)
+    image_url = mapped_column(String(255))
+    status = mapped_column(Enum(RestaurantStatus), default=RestaurantStatus.open)
+    rating = mapped_column(Float, default=0.0)
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     # relationships

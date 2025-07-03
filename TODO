@@ -4,5 +4,5 @@ thêm api trong restaurant : getrestaurant by userid
 
 03/07:
     ✅ Thêm ảnh cho category 
-    Thêm xửa xoá voucher
+    ✅ Thêm xửa xoá voucher
     Voucher cx phải có lọc theo id của user hi

@@ -32,8 +32,8 @@ async def update_user(db: AsyncSession, user_update: UserUpdate) -> Optional[Use
         user.gender = user_update.gender
     if user_update.birthday is not None:
         user.birthday = user_update.birthday
-    # if user_update.avatar_url is not None:
-    #     user.avatar_url = user_update.avatar_url
+    if user_update.status is not None:
+        user.status = user_update.status
     if user_update.role is not None:
         user.role = user_update.role
     await db.commit()
