@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from routers import user, address, restaurant, category, menu_item 
+from routers import user, address, restaurant, category, menu_item, voucher 
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
@@ -12,3 +12,4 @@ app.include_router(address.router)
 app.include_router(restaurant.router)
 app.include_router(category.router)
 app.include_router(menu_item.router)
+app.include_router(voucher.router)
