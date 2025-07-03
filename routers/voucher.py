@@ -5,7 +5,7 @@ from schemas.voucher import (
     VoucherCreate, VoucherUpdate, VoucherResponse
 )
 from services.voucher import (
-    create_voucher, get_voucher, update_voucher, delete_voucher, list_vouchers
+    create_voucher, get_voucher, list_vouchers_by_user, update_voucher, delete_voucher, list_vouchers
 )
 from typing import List
 
@@ -54,4 +54,14 @@ async def api_list_vouchers(
     db: AsyncSession = Depends(get_db)
 ):
     objs = await list_vouchers(db, skip, limit)
+    return objs
+
+@router.get("/list_by_user", response_model=List[VoucherResponse])
+async def api_list_vouchers_by_user(
+    user_uid: str,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, gt=0),
+    db: AsyncSession = Depends(get_db)
+):
+    objs = await list_vouchers_by_user(db, user_uid, skip, limit)
     return objs

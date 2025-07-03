@@ -37,3 +37,11 @@ async def delete_voucher(db: AsyncSession, voucher_id: int) -> bool:
 async def list_vouchers(db: AsyncSession, skip: int = 0, limit: int = 100) -> List[Voucher]:
     result = await db.execute(select(Voucher).offset(skip).limit(limit))
     return list(result.scalars().all())
+
+async def list_vouchers_by_user(
+    db: AsyncSession, user_uid: str, skip: int = 0, limit: int = 100
+) -> List[Voucher]:
+    result = await db.execute(
+        select(Voucher).where(Voucher.user_uid == user_uid).offset(skip).limit(limit)
+    )
+    return list(result.scalars().all())
