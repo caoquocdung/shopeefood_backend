@@ -10,6 +10,8 @@ class UserCreate(BaseModel):
     email: Optional[EmailStr] = None
     name: Optional[str] = None
     phone: Optional[str] = None
+    gender: Optional[str] = None
+    birthday: Optional[datetime] = None
     role: Optional[str] = "customer"
 
 class UserUpdate(BaseModel):
