@@ -75,7 +75,7 @@ async def add_menu_item_image(db: AsyncSession, data: MenuItemImageCreate) -> Me
             .values(is_primary=False)
         )
         await db.commit()
-    img = MenuItemImage(**data.dict())
+    img = MenuItemImage(**data.model_dump(exclude_unset=True))
     db.add(img)
     await db.commit()
     await db.refresh(img)

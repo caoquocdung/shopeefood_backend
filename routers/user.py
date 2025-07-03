@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from db import get_db
 from schemas.user import (
     UserProfileRequest, UserCreate, UserUpdate, UserResponse
 )
 from services.user import (
-    create_user, get_user, update_user, delete_user, list_users
+    create_user, get_user, update_user, delete_user, list_users, upload_user_avatar, delete_user_avatar
 )
 from typing import List
 
@@ -49,3 +49,23 @@ async def api_list_users(
 ):
     users = await list_users(db, skip=skip, limit=limit)
     return users
+
+@router.post("/upload_avatar")
+async def upload_avatar(
+    uid: str = Form(...),
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db)
+):
+    url = await upload_user_avatar(db, uid, file)
+    return {"avatar_url": url}
+
+@router.post("/delete_avatar")
+async def delete_avatar(
+    uid: str = Form(...),
+    db: AsyncSession = Depends(get_db)
+):
+    ok = await delete_user_avatar(db, uid)
+    if not ok:
+        raise HTTPException(status_code=404, detail="User not found or avatar not deleted")
+    return {"detail": "Avatar deleted"}
+    

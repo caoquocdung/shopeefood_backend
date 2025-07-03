@@ -5,7 +5,7 @@ from models import Category
 from schemas.category import CategoryCreate, CategoryUpdate
 
 async def create_category(db: AsyncSession, data: CategoryCreate) -> Category:
-    obj = Category(**data.dict())
+    obj = Category(**data.model_dump(exclude_unset=True))
     db.add(obj)
     await db.commit()
     await db.refresh(obj)
@@ -18,7 +18,7 @@ async def update_category(db: AsyncSession, data: CategoryUpdate) -> Optional[Ca
     obj = await db.get(Category, data.category_id)
     if not obj:
         return None
-    for field, value in data.dict(exclude_unset=True).items():
+    for field, value in data.model_dump(exclude_unset=True).items():
         if field != "category_id" and value is not None:
             setattr(obj, field, value)
     db.add(obj)

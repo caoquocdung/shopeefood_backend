@@ -5,7 +5,7 @@ from models import Restaurant
 from schemas.restaurant import RestaurantCreate, RestaurantUpdate
 
 async def create_restaurant(db: AsyncSession, data: RestaurantCreate) -> Restaurant:
-    obj = Restaurant(**data.dict())
+    obj = Restaurant(**data.model_dump(exclude_unset=True))
     db.add(obj)
     await db.commit()
     await db.refresh(obj)
@@ -18,7 +18,7 @@ async def update_restaurant(db: AsyncSession, data: RestaurantUpdate) -> Optiona
     obj = await db.get(Restaurant, data.restaurant_id)
     if not obj:
         return None
-    for field, value in data.dict(exclude_unset=True).items():
+    for field, value in data.model_dump(exclude_unset=True).items():
         if field != "restaurant_id" and value is not None:
             setattr(obj, field, value)
     db.add(obj)
