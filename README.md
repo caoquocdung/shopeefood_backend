@@ -23,3 +23,9 @@ docker run -d \
 ```
 docker run mysql-container
 ```
+
+```alembic revision --autogenerate -m "..."
+
+Kiểm tra file migration vừa tạo (chỉnh sửa nếu cần)
+
+alembic upgrade head```
