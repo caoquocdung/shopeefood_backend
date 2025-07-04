@@ -1,4 +1,10 @@
 ```
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+```
 yay -S docker --noconfirm
 systemctl enable --now docker.service
 sudo usermod -aG docker $USER
