@@ -2,6 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 from models import RestaurantStatus
+from models import RestaurantRequest
 
 
 # RestaurantCreate: for creating a new restaurant
@@ -14,8 +15,8 @@ class RestaurantCreate(BaseModel):
     close_time: Optional[datetime] = None
     description: Optional[str] = None
     image_url: Optional[str] = None
-    status: Optional[RestaurantStatus] = RestaurantStatus.open  # Default status is active
-
+    status: Optional[RestaurantStatus] = RestaurantStatus.open
+    request: Optional[RestaurantRequest] = RestaurantRequest.pending
 
 # RestaurantUpdate: for updating restaurant info
 class RestaurantUpdate(BaseModel):
@@ -44,6 +45,7 @@ class RestaurantResponse(BaseModel):
     description: Optional[str]
     image_url: Optional[str]
     status: Optional[RestaurantStatus]
+    request: Optional[RestaurantRequest]
     rating: Optional[float]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
