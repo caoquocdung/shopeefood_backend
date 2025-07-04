@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 from models import RestaurantStatus
@@ -9,11 +10,11 @@ class RestaurantCreate(BaseModel):
     name: str
     address: Optional[str] = None
     phone: Optional[str] = None
-    open_time: Optional[str] = None
-    close_time: Optional[str] = None
+    open_time: Optional[datetime] = None
+    close_time: Optional[datetime] = None
     description: Optional[str] = None
     image_url: Optional[str] = None
-    status: Optional[RestaurantStatus] = RestaurantStatus.active  # Default status is active
+    status: Optional[RestaurantStatus] = RestaurantStatus.open  # Default status is active
 
 
 # RestaurantUpdate: for updating restaurant info
@@ -22,8 +23,8 @@ class RestaurantUpdate(BaseModel):
     name: Optional[str] = None
     address: Optional[str] = None
     phone: Optional[str] = None
-    open_time: Optional[str] = None
-    close_time: Optional[str] = None
+    open_time: Optional[datetime] = None
+    close_time: Optional[datetime] = None
     description: Optional[str] = None
     image_url: Optional[str] = None
     status: Optional[RestaurantStatus] = None  # Allow status to be updated, but not required
@@ -36,14 +37,14 @@ class RestaurantResponse(BaseModel):
     name: str
     address: Optional[str]
     phone: Optional[str]
-    open_time: Optional[str]
-    close_time: Optional[str]
+    open_time: Optional[datetime]
+    close_time: Optional[datetime]
     description: Optional[str]
     image_url: Optional[str]
     status: Optional[RestaurantStatus]
     rating: Optional[float]
-    created_at: Optional[str]
-    updated_at: Optional[str]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
     class Config:
         from_attributes = True

@@ -58,11 +58,19 @@ async def upload_restaurant_image(
     # Validate type
     if file.content_type not in ALLOWED_RESTAURANT_IMG_TYPES:
         raise HTTPException(400, "Invalid image type")
-    # Validate size
-    if file.spool_max_size > MAX_RESTAURANT_IMG_SIZE:
+    # Validate sizecontent = await file.read()
+    content = await file.read()
+    if not content:
+        raise HTTPException(400, "Empty file")
+    # Check size
+    if len(content) > MAX_RESTAURANT_IMG_SIZE:
         raise HTTPException(400, "Image size exceeds limit")
     # Generate filename
+    os.makedirs(RESTAURANT_IMAGE_DIR, exist_ok=True)
+    if not file.filename:
+        raise HTTPException(400, "Uploaded file must have a filename.")
     filename = generate_restaurant_image_filename(file.filename)
+    
     file_path = os.path.join(RESTAURANT_IMAGE_DIR, filename)
     # Save file
     with open(file_path, "wb") as f:
@@ -79,7 +87,7 @@ async def upload_restaurant_image(
     return restaurant.image_url
 
 async def delete_restaurant_image(restaurant_id: int, db: AsyncSession) -> bool:
-    restaurant = await get_restaurant(db, restaurant_id)
+    restaurant = await db.get(Restaurant, restaurant_id)
     if not restaurant or not restaurant.image_url:
         return False
     # Delete image file from disk
@@ -88,6 +96,6 @@ async def delete_restaurant_image(restaurant_id: int, db: AsyncSession) -> bool:
         os.remove(image_path)
     # Clear image URL in database
     restaurant.image_url = None
-    db.add(restaurant)
     await db.commit()
+    await db.refresh(restaurant)
     return True

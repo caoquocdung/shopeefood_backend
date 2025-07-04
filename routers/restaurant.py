@@ -66,7 +66,7 @@ async def api_delete_restaurant_image(
     """
     Delete a restaurant image. Returns success message.
     """
-    ok = await delete_restaurant_image(db, restaurant_id)
+    ok = await delete_restaurant_image(restaurant_id, db)
     if not ok:
         raise HTTPException(404, "Restaurant not found or image not found")
     return {"detail": "Image deleted successfully"}
