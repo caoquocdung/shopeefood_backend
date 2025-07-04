@@ -47,7 +47,7 @@ async def get_restaurant_by_user_id(db: AsyncSession, user_id: str) -> List[Rest
     Get all restaurants owned by a specific user.
     """
     result = await db.execute(
-        select(Restaurant).where(Restaurant.user_id == user_id)
+        select(Restaurant).where(Restaurant.owner_uid == user_id)
     )
     return list(result.scalars().all())
 
