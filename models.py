@@ -25,6 +25,11 @@ class RestaurantStatus(enum.Enum):
     closed = 'closed'
     suspended = 'suspended'
 
+class RestaurantRequest(enum.Enum):
+    pending = 'pending'
+    accepted = 'accepted'
+    rejected = 'rejected'
+
 class OrderStatus(enum.Enum):
     pending = 'pending'
     accepted = 'accepted'
@@ -113,6 +118,7 @@ class Restaurant(Base):
     description = mapped_column(Text)
     image_url = mapped_column(String(255))
     status = mapped_column(Enum(RestaurantStatus), default=RestaurantStatus.open)
+    request = mapped_column(Enum(RestaurantRequest), default=RestaurantRequest.pending)
     rating = mapped_column(Float, default=0.0)
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
