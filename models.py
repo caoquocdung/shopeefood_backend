@@ -109,6 +109,7 @@ class Restaurant(Base):
     phone = mapped_column(String(20))
     open_time = mapped_column(DateTime)
     close_time = mapped_column(DateTime)
+    is_favorite = mapped_column(Boolean, default=False)
     description = mapped_column(Text)
     image_url = mapped_column(String(255))
     status = mapped_column(Enum(RestaurantStatus), default=RestaurantStatus.open)

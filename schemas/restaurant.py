@@ -23,6 +23,7 @@ class RestaurantUpdate(BaseModel):
     name: Optional[str] = None
     address: Optional[str] = None
     phone: Optional[str] = None
+    is_favorite: Optional[bool] = None  # Optional field for favorite status
     open_time: Optional[datetime] = None
     close_time: Optional[datetime] = None
     description: Optional[str] = None
@@ -37,6 +38,7 @@ class RestaurantResponse(BaseModel):
     name: str
     address: Optional[str]
     phone: Optional[str]
+    is_favorite: Optional[bool] = None
     open_time: Optional[datetime]
     close_time: Optional[datetime]
     description: Optional[str]

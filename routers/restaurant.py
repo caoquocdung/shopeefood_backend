@@ -5,7 +5,7 @@ from schemas.restaurant import (
     RestaurantCreate, RestaurantUpdate, RestaurantResponse
 )
 from services.restaurant import (
-    create_restaurant, delete_restaurant_image, get_restaurant, update_restaurant, delete_restaurant, list_restaurants, upload_restaurant_image
+    create_restaurant, delete_restaurant_image, get_restaurant, get_restaurant_by_user_id, update_restaurant, delete_restaurant, list_restaurants, upload_restaurant_image
 )
 from typing import List
 
@@ -44,6 +44,17 @@ async def api_list_restaurants(
     db: AsyncSession = Depends(get_db)
 ):
     objs = await list_restaurants(db, skip, limit)
+    return objs
+
+@router.get("/by_user/{user_id}", response_model=List[RestaurantResponse])
+async def api_get_restaurants_by_user(
+    user_id: str,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get all restaurants owned by a specific user.
+    """
+    objs = await get_restaurant_by_user_id(db, user_id)
     return objs
 
 @router.post("/upload_image", response_model=dict)

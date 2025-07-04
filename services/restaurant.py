@@ -42,6 +42,15 @@ async def list_restaurants(db: AsyncSession, skip: int = 0, limit: int = 100) ->
     result = await db.execute(select(Restaurant).offset(skip).limit(limit))
     return list(result.scalars().all())
 
+async def get_restaurant_by_user_id(db: AsyncSession, user_id: str) -> List[Restaurant]:
+    """
+    Get all restaurants owned by a specific user.
+    """
+    result = await db.execute(
+        select(Restaurant).where(Restaurant.user_id == user_id)
+    )
+    return list(result.scalars().all())
+
 RESTAURANT_IMAGE_DIR = "static/restaurant_images"
 ALLOWED_RESTAURANT_IMG_TYPES = {"image/jpeg", "image/png", "image/webp"}
 MAX_RESTAURANT_IMG_SIZE = 3 * 1024 * 1024  # 3MB    
