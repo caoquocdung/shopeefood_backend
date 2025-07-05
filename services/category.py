@@ -68,7 +68,7 @@ async def upload_category_image(
     file_path = os.path.join(CATEGORY_IMAGE_DIR, filename)
     with open(file_path, "wb") as f:
         f.write(content)
-    image_url = f"/static/category_image/{filename}"
+    image_url = f"/static/category_images/{filename}"
     category = await db.get(Category, category_id)
     if not category:
         raise HTTPException(404, "Category not found")
