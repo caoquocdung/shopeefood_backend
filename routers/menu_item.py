@@ -9,7 +9,7 @@ from services.menu_item import (
     create_menu_item, get_menu_item, update_menu_item, delete_menu_item,
     list_menu_items,
     add_menu_item_image, delete_menu_item_image, list_menu_item_images,
-    upload_menu_image_service, upload_multi_menu_images_service, list_menu_items_by_category
+    upload_menu_image_service, upload_multi_menu_images_service, list_menu_items_by_category, list_menu_items_by_restaurant_id
 )
 from typing import List
 
@@ -57,6 +57,14 @@ async def api_list_menu_items_by_category(
     db: AsyncSession = Depends(get_db)
 ):
     items = await list_menu_items_by_category(db, category_id, skip, limit)
+    return items
+
+@router.get("/menu_items_by_resid/{restaurant_id}", response_model=List[MenuItemResponse])
+async def api_list_menu_items_by_restaurant(
+    restaurant_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    items = await list_menu_items_by_restaurant_id(db, restaurant_id)
     return items
 
 # ----- Menu Item Images -----

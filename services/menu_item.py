@@ -5,7 +5,9 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy import update
 from typing import List, Optional
-from models import MenuItem, MenuItemImage
+from models import MenuItem, MenuItemImage, Restaurant  
+from sqlalchemy.orm import joinedload
+
 from schemas.menu_item import (
     MenuItemCreate, MenuItemUpdate,
     MenuItemImageCreate
@@ -63,6 +65,14 @@ async def list_menu_items_by_category(db, category_id: int, skip: int = 0, limit
         select(MenuItem).options(selectinload(MenuItem.images)).where(MenuItem.category_id == category_id).offset(skip).limit(limit)
     )
     return list(result.scalars().all())
+
+async def list_menu_items_by_restaurant_id(db: AsyncSession, restaurant_id: int) -> List[MenuItem]:
+    result = await db.execute(
+        select(MenuItem)
+        .options(selectinload(MenuItem.images))
+        .where(MenuItem.restaurant_id == restaurant_id)
+    )
+    return result.scalars().all()
 
 # CRUD MenuItemImage
 
