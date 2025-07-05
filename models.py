@@ -1,6 +1,7 @@
 import enum
 import datetime
 from sqlalchemy.orm import declarative_base, relationship, mapped_column
+from sqlalchemy import Enum as SqlEnum
 from sqlalchemy import (
     Integer, String, Text, DateTime, Boolean, ForeignKey,
     DECIMAL, Enum, Float
@@ -117,8 +118,8 @@ class Restaurant(Base):
     is_favorite = mapped_column(Boolean, default=False)
     description = mapped_column(Text)
     image_url = mapped_column(String(255))
-    status = mapped_column(Enum(RestaurantStatus), default=RestaurantStatus.open)
-    request = mapped_column(Enum(RestaurantRequest), default=RestaurantRequest.pending)
+    status = mapped_column(SqlEnum(RestaurantStatus, native_enum=False), default=RestaurantStatus.open)
+    request = mapped_column(SqlEnum(RestaurantRequest, native_enum=False), default=RestaurantRequest.pending)
     rating = mapped_column(Float, default=0.0)
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)

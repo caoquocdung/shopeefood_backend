@@ -19,6 +19,7 @@ async def get_restaurant(db: AsyncSession, restaurant_id: int) -> Optional[Resta
     return await db.get(Restaurant, restaurant_id)
 
 async def update_restaurant(db: AsyncSession, data: RestaurantUpdate) -> Optional[Restaurant]:
+    print("Incoming data:", data.model_dump(exclude_unset=True))
     obj = await db.get(Restaurant, data.restaurant_id)
     if not obj:
         return None

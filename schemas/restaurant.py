@@ -30,6 +30,7 @@ class RestaurantUpdate(BaseModel):
     description: Optional[str] = None
     image_url: Optional[str] = None
     status: Optional[RestaurantStatus] = None  # Allow status to be updated, but not required
+    request: Optional[RestaurantRequest] = None  # Allow request to be updated, but not required
 
 
 # RestaurantResponse: for returning restaurant info (all fields, matching model)
