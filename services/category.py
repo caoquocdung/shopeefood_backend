@@ -1,7 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import aliased
+from sqlalchemy import func
 from typing import List, Optional
-from models import Category
+from models import Category, MenuItem
 from schemas.category import CategoryCreate, CategoryUpdate
 
 import os
@@ -16,7 +18,16 @@ async def create_category(db: AsyncSession, data: CategoryCreate) -> Category:
     return obj
 
 async def get_category(db: AsyncSession, category_id: int) -> Optional[Category]:
-    return await db.get(Category, category_id)
+    category = await db.get(Category, category_id)
+    if not category:
+        return None
+    result = await db.execute(
+        select(func.count()).select_from(MenuItem).where(MenuItem.category_id == category.category_id)
+    )
+    product_count = result.scalar() or 0
+    category.productcount = product_count
+    return category
+
 
 async def update_category(db: AsyncSession, data: CategoryUpdate) -> Optional[Category]:
     obj = await db.get(Category, data.category_id)
@@ -39,8 +50,29 @@ async def delete_category(db: AsyncSession, category_id: int) -> bool:
     return True
 
 async def list_categories(db: AsyncSession, skip: int = 0, limit: int = 100) -> List[Category]:
-    result = await db.execute(select(Category).offset(skip).limit(limit))
-    return list(result.scalars().all())
+    cat_alias = aliased(Category)
+    menu_item_alias = aliased(MenuItem)
+
+    stmt = (
+        select(
+            cat_alias,
+            func.count(menu_item_alias.category_id).label("productcount")
+        )
+        .outerjoin(menu_item_alias, menu_item_alias.category_id == cat_alias.category_id)
+        .group_by(cat_alias.category_id)
+        .offset(skip)
+        .limit(limit)
+    )
+
+    result = await db.execute(stmt)
+
+    categories = []
+    for row in result:
+        category: Category = row[0]
+        category.productcount = row[1]  # Gán động productcount
+        categories.append(category)
+
+    return categories
 
 
 CATEGORY_IMAGE_DIR = "static/category_images"

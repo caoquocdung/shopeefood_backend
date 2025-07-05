@@ -17,6 +17,7 @@ class CategoryResponse(BaseModel):
     name: str
     description: Optional[str]
     image_url: Optional[str]
+    productcount: int = 0 
 
     class Config:
         from_attributes = True
