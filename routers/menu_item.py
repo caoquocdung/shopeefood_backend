@@ -9,7 +9,8 @@ from services.menu_item import (
     create_menu_item, get_menu_item, update_menu_item, delete_menu_item,
     list_menu_items,
     add_menu_item_image, delete_menu_item_image, list_menu_item_images,
-    upload_menu_image_service, upload_multi_menu_images_service, list_menu_items_by_category, list_menu_items_by_restaurant_id
+    upload_menu_image_service, upload_multi_menu_images_service, list_menu_items_by_category, list_menu_items_by_restaurant_id,
+    delete_menu_item_all_image
 )
 from typing import List
 
@@ -84,6 +85,13 @@ async def api_delete_menu_item_image(image_id: int, db: AsyncSession = Depends(g
     if not ok:
         raise HTTPException(404, "Image not found")
     return {"detail": "Image deleted"}
+
+@router.delete("/image/delete_all/{item_id}", response_model=dict)
+async def api_delete_all_images_of_menu_item(item_id: int, db: AsyncSession = Depends(get_db)):
+    ok = await delete_menu_item_all_image(db, item_id)
+    if not ok:
+        raise HTTPException(404, "No images found for this menu item")
+    return {"detail": f"All images for item_id {item_id} deleted"}
 
 @router.post("/image/upload", response_model=MenuItemImageResponse)
 async def upload_menu_item_image(

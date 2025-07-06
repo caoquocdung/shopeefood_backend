@@ -99,6 +99,23 @@ async def delete_menu_item_image(db: AsyncSession, image_id: int) -> bool:
     await db.commit()
     return True
 
+async def delete_menu_item_all_image(db: AsyncSession, item_id: int) -> bool:
+    result = await db.execute(
+        select(MenuItemImage).where(MenuItemImage.item_id == item_id)
+    )
+    images = result.scalars().all()
+    if not images:
+        return False
+    for img in images:
+        file_path = os.path.join("static", "menu_images", os.path.basename(img.image_url))
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        await db.delete(img)
+
+    await db.commit()
+    return True
+
 async def list_menu_item_images(db: AsyncSession, item_id: int) -> List[MenuItemImage]:
     result = await db.execute(select(MenuItemImage).where(MenuItemImage.item_id == item_id))
     return list(result.scalars().all())
