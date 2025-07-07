@@ -284,3 +284,19 @@ class SearchHistory(Base):
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     # relationships
     user = relationship("User", back_populates="search_history")
+
+
+class CartItem(Base):
+    __tablename__ = "cart_items"
+    cart_item_id = mapped_column(Integer, primary_key=True, index=True)
+    user_uid = mapped_column(String(128), ForeignKey('users.uid'))
+    restaurant_id = mapped_column(Integer, ForeignKey('restaurants.restaurant_id'))
+    item_id = mapped_column(Integer, ForeignKey('menu_items.item_id'))
+    quantity = mapped_column(Integer, default=1)
+    note = mapped_column(Text)
+    created_at = mapped_column(DateTime, default=datetime.datetime.now)
+    updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+
+    user = relationship("User")
+    restaurant = relationship("Restaurant")
+    menu_item = relationship("MenuItem")
