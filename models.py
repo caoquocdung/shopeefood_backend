@@ -158,6 +158,7 @@ class MenuItem(Base):
     restaurant = relationship("Restaurant", back_populates="menu_items")
     order_items = relationship("OrderItem", back_populates="menu_item", cascade="all, delete-orphan")
     images = relationship("MenuItemImage", back_populates="menu_item", cascade="all, delete-orphan")
+    cart_items = relationship("CartItem", back_populates="menu_item", passive_deletes=True)
 
 # -------- MENU ITEM IMAGES --------
 class MenuItemImage(Base):
@@ -291,7 +292,7 @@ class CartItem(Base):
     cart_item_id = mapped_column(Integer, primary_key=True, index=True)
     user_uid = mapped_column(String(128), ForeignKey('users.uid'))
     restaurant_id = mapped_column(Integer, ForeignKey('restaurants.restaurant_id'))
-    item_id = mapped_column(Integer, ForeignKey('menu_items.item_id'))
+    item_id = mapped_column(Integer, ForeignKey('menu_items.item_id', ondelete='CASCADE'),)
     quantity = mapped_column(Integer, default=1)
     note = mapped_column(Text)
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
