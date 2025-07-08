@@ -1,7 +1,8 @@
 from pydantic import BaseModel
-from typing import Optional, Literal
+from typing import Optional
 from decimal import Decimal
 from datetime import datetime
+
 
 from models import DiscountType, VoucherStatus
 
@@ -17,6 +18,7 @@ class VoucherCreate(BaseModel):
     usage_limit: Optional[int] = None
     seller_uid: Optional[str] = None
     status: VoucherStatus = VoucherStatus.active
+    created_by_admin: bool = False
 
 class VoucherUpdate(BaseModel):
     voucher_id: int
@@ -44,6 +46,7 @@ class VoucherResponse(BaseModel):
     used_count: int
     seller_uid: Optional[str]
     status: str
+    created_by_admin: bool 
 
     class Config:
         from_attributes = True
