@@ -9,8 +9,10 @@ class OrderCreate(BaseModel):
     restaurant_id: int
     total_price: Decimal
     address_id: Optional[int] = None
-    delivery_address: Optional[str] = None
+    # delivery_address: Optional[str] = None
     note: Optional[str] = None
+    admin_voucher_id: Optional[int] = None
+    shop_voucher_id: Optional[int] = None
     # shipper_uid sẽ được cập nhật khi gán shipper
 
 class OrderUpdate(BaseModel):
@@ -18,7 +20,7 @@ class OrderUpdate(BaseModel):
     status: Optional[OrderStatus] = None
     total_price: Optional[Decimal] = None
     address_id: Optional[int] = None
-    delivery_address: Optional[str] = None
+    # delivery_address: Optional[str] = None
     note: Optional[str] = None
     shipper_uid: Optional[str] = None
 
@@ -30,7 +32,9 @@ class OrderResponse(BaseModel):
     total_price: Decimal
     status: OrderStatus
     address_id: Optional[int]
-    delivery_address: Optional[str]
+    # delivery_address: Optional[str]
+    admin_voucher_id: Optional[int]
+    shop_voucher_id: Optional[int]
     note: Optional[str]
     created_at: datetime
     updated_at: datetime

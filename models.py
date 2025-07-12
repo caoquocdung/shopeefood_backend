@@ -245,7 +245,10 @@ class Order(Base):
     address_id = mapped_column(
         Integer, ForeignKey("addresses.address_id"), nullable=True
     )
-    delivery_address = mapped_column(Text)
+    admin_voucher_id = mapped_column(Integer, ForeignKey("vouchers.voucher_id"), nullable=True, unique=True)
+    shop_voucher_id = mapped_column(Integer, ForeignKey("vouchers.voucher_id"), nullable=True, unique=True)
+
+    # delivery_address = mapped_column(Text)
     note = mapped_column(Text)
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(
@@ -270,6 +273,9 @@ class Order(Base):
     shipper = relationship(
         "User", back_populates="orders_as_shipper", foreign_keys=[shipper_uid]
     )
+    admin_voucher = relationship("Voucher", foreign_keys=[admin_voucher_id], post_update=True)
+    shop_voucher = relationship("Voucher", foreign_keys=[shop_voucher_id], post_update=True)
+
 
 
 # -------- ORDER ITEMS --------
