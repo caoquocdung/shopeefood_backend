@@ -5,7 +5,7 @@ from schemas.voucher import (
     VoucherCreate, VoucherUpdate, VoucherResponse
 )
 from services.voucher import (
-    create_voucher, get_voucher, list_vouchers_by_user, update_voucher, delete_voucher, list_vouchers
+    create_voucher, get_voucher, list_vouchers_by_resid, update_voucher, delete_voucher, list_vouchers, is_voucher_code_unique
 )
 from typing import List
 
@@ -56,12 +56,21 @@ async def api_list_vouchers(
     objs = await list_vouchers(db, skip, limit)
     return objs
 
-@router.get("/list_by_user", response_model=List[VoucherResponse])
-async def api_list_vouchers_by_user(
-    user_uid: str,
+@router.get("/list_by_resid", response_model=List[VoucherResponse])
+async def api_list_vouchers_by_res(
+    res_uid: int,
     skip: int = Query(0, ge=0),
     limit: int = Query(100, gt=0),
     db: AsyncSession = Depends(get_db)
 ):
-    objs = await list_vouchers_by_user(db, user_uid, skip, limit)
+    objs = await list_vouchers_by_resid(db, res_uid, skip, limit)
     return objs
+
+@router.get("/check-code")
+async def check_voucher_code_unique(
+    res_uid: int = Query(..., alias="res_uid"),
+    code: str = Query(...),
+    db: AsyncSession = Depends(get_db)
+):
+    is_unique = await is_voucher_code_unique(db, res_uid, code)
+    return {"is_unique": is_unique}

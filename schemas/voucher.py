@@ -16,7 +16,7 @@ class VoucherCreate(BaseModel):
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
     usage_limit: Optional[int] = None
-    seller_uid: Optional[str] = None
+    seller_uid: Optional[int] = None
     status: VoucherStatus = VoucherStatus.active
     created_by_admin: bool = False
 
@@ -44,7 +44,7 @@ class VoucherResponse(BaseModel):
     end_date: Optional[datetime]
     usage_limit: Optional[int]
     used_count: int
-    seller_uid: Optional[str]
+    seller_uid: Optional[int]
     status: str
     created_by_admin: bool 
 

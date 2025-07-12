@@ -38,10 +38,24 @@ async def list_vouchers(db: AsyncSession, skip: int = 0, limit: int = 100) -> Li
     result = await db.execute(select(Voucher).offset(skip).limit(limit))
     return list(result.scalars().all())
 
-async def list_vouchers_by_user(
-    db: AsyncSession, user_uid: str, skip: int = 0, limit: int = 100
+async def list_vouchers_by_resid(
+    db: AsyncSession, res_uid: str, skip: int = 0, limit: int = 100
 ) -> List[Voucher]:
     result = await db.execute(
-        select(Voucher).where(Voucher.user_uid == user_uid).offset(skip).limit(limit)
+        select(Voucher).where(Voucher.seller_uid == res_uid).offset(skip).limit(limit)
     )
     return list(result.scalars().all())
+
+async def is_voucher_code_unique(
+    db: AsyncSession,
+    res_uid: int,
+    code: str
+) -> bool:
+    stmt = select(Voucher).where(
+        Voucher.seller_uid == res_uid,
+        Voucher.code == code
+    )
+
+    result = await db.execute(stmt)
+    voucher = result.scalar_one_or_none()
+    return voucher is None

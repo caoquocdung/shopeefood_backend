@@ -170,7 +170,8 @@ class Restaurant(Base):
     reviews = relationship(
         "Review", back_populates="restaurant", cascade="all, delete-orphan"
     )
-    # vouchers = relationship("Voucher", back_populates="restaurant", cascade="all, delete-orphan")
+    vouchers = relationship(
+        "Voucher", back_populates="seller", cascade="all, delete-orphan")
 
 
 class Category(Base):
@@ -317,11 +318,11 @@ class Voucher(Base):
     end_date = mapped_column(DateTime)
     usage_limit = mapped_column(Integer)
     used_count = mapped_column(Integer, default=0)
-    seller_uid = mapped_column(String(128), ForeignKey("users.uid"))
+    seller_uid = mapped_column(Integer, ForeignKey("restaurants.restaurant_id"), nullable=True)
     status = mapped_column(Enum(VoucherStatus), default=VoucherStatus.active)
     created_by_admin = mapped_column(Boolean, default=False, nullable=False)
 
-    seller = relationship("User")
+    seller = relationship("Restaurant")
 
 
 # -------- WALLETS --------
