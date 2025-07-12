@@ -53,7 +53,7 @@ class OrderStatus(enum.Enum):
 
 
 class PaymentMethod(enum.Enum):
-    cod = "cod"           
+    cod = "cod"
     qtiwallet = "qtiwallet"
 
 
@@ -73,6 +73,12 @@ class WalletTransType(enum.Enum):
     payment = "payment"
     refund = "refund"
     withdraw = "withdraw"
+
+
+class BannerStatus(enum.Enum):
+    active = "active"
+    inactive = "inactive"
+    expired = "expired"
 
 
 # -------- USERS (firebase UID) --------
@@ -176,7 +182,8 @@ class Restaurant(Base):
         "Review", back_populates="restaurant", cascade="all, delete-orphan"
     )
     vouchers = relationship(
-        "Voucher", back_populates="seller", cascade="all, delete-orphan")
+        "Voucher", back_populates="seller", cascade="all, delete-orphan"
+    )
 
 
 class Category(Base):
@@ -250,11 +257,17 @@ class Order(Base):
     address_id = mapped_column(
         Integer, ForeignKey("addresses.address_id"), nullable=True
     )
-    admin_voucher_id = mapped_column(Integer, ForeignKey("vouchers.voucher_id"), nullable=True, unique=True)
-    shop_voucher_id = mapped_column(Integer, ForeignKey("vouchers.voucher_id"), nullable=True, unique=True)
+    admin_voucher_id = mapped_column(
+        Integer, ForeignKey("vouchers.voucher_id"), nullable=True, unique=True
+    )
+    shop_voucher_id = mapped_column(
+        Integer, ForeignKey("vouchers.voucher_id"), nullable=True, unique=True
+    )
     # delivery_address = mapped_column(Text)
     note = mapped_column(Text)
-    payment_method = mapped_column(Enum(PaymentMethod), nullable=False, default=PaymentMethod.cod)
+    payment_method = mapped_column(
+        Enum(PaymentMethod), nullable=False, default=PaymentMethod.cod
+    )
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(
         DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now
@@ -278,9 +291,12 @@ class Order(Base):
     shipper = relationship(
         "User", back_populates="orders_as_shipper", foreign_keys=[shipper_uid]
     )
-    admin_voucher = relationship("Voucher", foreign_keys=[admin_voucher_id], post_update=True)
-    shop_voucher = relationship("Voucher", foreign_keys=[shop_voucher_id], post_update=True)
-
+    admin_voucher = relationship(
+        "Voucher", foreign_keys=[admin_voucher_id], post_update=True
+    )
+    shop_voucher = relationship(
+        "Voucher", foreign_keys=[shop_voucher_id], post_update=True
+    )
 
 
 # -------- ORDER ITEMS --------
@@ -329,7 +345,9 @@ class Voucher(Base):
     end_date = mapped_column(DateTime)
     usage_limit = mapped_column(Integer)
     used_count = mapped_column(Integer, default=0)
-    seller_uid = mapped_column(Integer, ForeignKey("restaurants.restaurant_id"), nullable=True)
+    seller_uid = mapped_column(
+        Integer, ForeignKey("restaurants.restaurant_id"), nullable=True
+    )
     status = mapped_column(Enum(VoucherStatus), default=VoucherStatus.active)
     created_by_admin = mapped_column(Boolean, default=False, nullable=False)
 
@@ -395,3 +413,14 @@ class CartItem(Base):
     user = relationship("User")
     restaurant = relationship("Restaurant")
     menu_item = relationship("MenuItem")
+
+
+class Banner(Base):
+    __tablename__ = "banners"
+    banner_id = mapped_column(Integer, primary_key=True, index=True)
+    title = mapped_column(String(255), nullable=False)
+    description = mapped_column(Text)
+    status = mapped_column(Enum(BannerStatus), default=BannerStatus.active, nullable=False)
+    image_url = mapped_column(String(255), nullable=False)
+    created_at = mapped_column(DateTime, default=datetime.datetime.now)
+    updated_at = mapped_column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
