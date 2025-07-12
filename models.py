@@ -289,9 +289,9 @@ class OrderItem(Base):
     order_item_id = mapped_column(Integer, primary_key=True, index=True)
     order_id = mapped_column(Integer, ForeignKey("orders.order_id"))
     item_id = mapped_column(Integer, ForeignKey("menu_items.item_id"))
-    quantity = mapped_column(Integer, default=1)
-    price = mapped_column(DECIMAL(10, 2))
-    note = mapped_column(Text)
+    # quantity = mapped_column(Integer, default=1)
+    # price = mapped_column(DECIMAL(10, 2))
+    # note = mapped_column(Text)
     # relationships
     order = relationship("Order", back_populates="order_items")
     menu_item = relationship("MenuItem", back_populates="order_items")
