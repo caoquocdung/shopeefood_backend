@@ -1,11 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
-from models import Order, OrderStatus, Voucher
+from models import Order, OrderStatus, PaymentMethod, Voucher
 from schemas.order import OrderCreate, OrderUpdate
 
 
 async def create_order(db: AsyncSession, data: OrderCreate) -> Order:
+    if data.payment_method == PaymentMethod.qtiwallet:
+    # Check wallet, deduct balance, create wallet transaction...
+        pass
     # TODO: validate voucher, compute discount, etc if needed
     obj = Order(**data.model_dump(exclude_unset=True))
     db.add(obj)

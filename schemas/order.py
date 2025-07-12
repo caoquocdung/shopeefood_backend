@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 from decimal import Decimal
 from datetime import datetime
-from models import OrderStatus
+from models import OrderStatus, PaymentMethod
 
 class OrderCreate(BaseModel):
     user_uid: str
@@ -13,6 +13,7 @@ class OrderCreate(BaseModel):
     note: Optional[str] = None
     admin_voucher_id: Optional[int] = None
     shop_voucher_id: Optional[int] = None
+    payment_method: PaymentMethod = PaymentMethod.cod
     # shipper_uid sẽ được cập nhật khi gán shipper
 
 class OrderUpdate(BaseModel):
@@ -23,6 +24,7 @@ class OrderUpdate(BaseModel):
     # delivery_address: Optional[str] = None
     note: Optional[str] = None
     shipper_uid: Optional[str] = None
+    payment_method: Optional[PaymentMethod] = None
 
 class OrderResponse(BaseModel):
     order_id: int
@@ -36,6 +38,7 @@ class OrderResponse(BaseModel):
     admin_voucher_id: Optional[int]
     shop_voucher_id: Optional[int]
     note: Optional[str]
+    payment_method: PaymentMethod
     created_at: datetime
     updated_at: datetime
 

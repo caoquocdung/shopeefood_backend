@@ -52,6 +52,11 @@ class OrderStatus(enum.Enum):
     cancelled = "cancelled"
 
 
+class PaymentMethod(enum.Enum):
+    cod = "cod"           
+    qtiwallet = "qtiwallet"
+
+
 class VoucherStatus(enum.Enum):
     active = "active"
     expired = "expired"
@@ -247,9 +252,9 @@ class Order(Base):
     )
     admin_voucher_id = mapped_column(Integer, ForeignKey("vouchers.voucher_id"), nullable=True, unique=True)
     shop_voucher_id = mapped_column(Integer, ForeignKey("vouchers.voucher_id"), nullable=True, unique=True)
-
     # delivery_address = mapped_column(Text)
     note = mapped_column(Text)
+    payment_method = mapped_column(Enum(PaymentMethod), nullable=False, default=PaymentMethod.cod)
     created_at = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at = mapped_column(
         DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now
